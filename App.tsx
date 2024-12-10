@@ -1,79 +1,70 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { Pantalla } from './src/components/Pantalla';
-import { Pantalla2 } from './src/components/Pantalla2';
 import { BotonOperacion } from './src/components/BotonOperacion';
 import { useCalculadora } from './src/hooks/useCalculadora';
+import { GlobalStyles } from './src/theme/Estilos';
+import { Colores } from './src/theme/Colores';
 
 export default function App() {
 
   const {formula, numeroAnterior, construirNumero, clean, cambiarSigno, borrarDigito,
-         operacionDividir, operacionMultiplicar, operacionRestar, operacionSumar,resultado  } = useCalculadora();
+         operacion,resultado  } = useCalculadora();
+
+         enum Operadores {
+          sumar = '+',
+          restar = '-',
+          multiplicar = '*',
+          dividir = '/',
+      } 
+
+  const BOTON_NORMAL = 80;
+  const BOTON_ANCHO = BOTON_NORMAL*2;
 
   return (
   
-    <View style={styles.container}>    
-      <Pantalla numberOfLines={1} adjustsFontSizeToFit>{formula}</Pantalla>
+    <View style={GlobalStyles.container}>    
+      <Pantalla numberOfLines={1} adjustsFontSizeToFit variante='principal'>{formula}</Pantalla>
+      <Pantalla
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        variante="secundaria"
 
-      {formula === numeroAnterior ? (
-        <Pantalla2 numberOfLines={1} adjustsFontSizeToFit> </Pantalla2>
-      ) : (
-        <Pantalla2 numberOfLines={1} adjustsFontSizeToFit>{numeroAnterior}</Pantalla2>
-      )}
-      
-     
-      
-      
+      >{formula === numeroAnterior ? '' : numeroAnterior}
+      </Pantalla>
+
       <StatusBar style="auto" />
 
-    <View style={styles.fila}>
-      <BotonOperacion label='C' width={80} onPress={clean}></BotonOperacion>
-      <BotonOperacion label='+/-' width={80} onPress={cambiarSigno}></BotonOperacion>
-      <BotonOperacion label='del' width={80} onPress={borrarDigito}></BotonOperacion>
-      <BotonOperacion label='/' width={80} onPress={operacionDividir}></BotonOperacion>
+    <View style={GlobalStyles.fila}>
+      <BotonOperacion label='C' width={BOTON_NORMAL} onPress={clean} tipo='otro'></BotonOperacion>
+      <BotonOperacion label='+/-' width={BOTON_NORMAL} onPress={cambiarSigno} tipo='otro'></BotonOperacion>
+      <BotonOperacion label='del' width={BOTON_NORMAL} onPress={borrarDigito} tipo='otro'></BotonOperacion>
+      <BotonOperacion label='/' width={BOTON_NORMAL} onPress={()=>operacion(Operadores.dividir)} tipo='operacion'></BotonOperacion>
     </View>
-    <View style={styles.fila}>
-      <BotonOperacion label='7' width={80} onPress={() =>construirNumero('7')}></BotonOperacion>
-      <BotonOperacion label='8' width={80} onPress={() =>construirNumero('8')}></BotonOperacion>
-      <BotonOperacion label='9' width={80} onPress={() =>construirNumero('9')}></BotonOperacion>
-      <BotonOperacion label='x' width={80} onPress={operacionMultiplicar}></BotonOperacion>
+    <View style={GlobalStyles.fila}>
+      <BotonOperacion label='7' width={BOTON_NORMAL} onPress={() =>construirNumero('7')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='8' width={BOTON_NORMAL} onPress={() =>construirNumero('8')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='9' width={BOTON_NORMAL} onPress={() =>construirNumero('9')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='x' width={BOTON_NORMAL} onPress={()=>operacion(Operadores.multiplicar)} tipo="operacion"></BotonOperacion>
     </View>
-    <View style={styles.fila}>
-      <BotonOperacion label='4' width={80} onPress={() =>construirNumero('4')}></BotonOperacion>
-      <BotonOperacion label='5' width={80} onPress={() =>construirNumero('5')}></BotonOperacion>
-      <BotonOperacion label='6' width={80} onPress={() =>construirNumero('6')}></BotonOperacion>
-      <BotonOperacion label='-' width={80} onPress={operacionRestar}></BotonOperacion>
+    <View style={GlobalStyles.fila}>
+      <BotonOperacion label='4' width={BOTON_NORMAL} onPress={() =>construirNumero('4')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='5' width={BOTON_NORMAL} onPress={() =>construirNumero('5')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='6' width={BOTON_NORMAL} onPress={() =>construirNumero('6')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='-' width={BOTON_NORMAL} onPress={()=>operacion(Operadores.restar)} tipo="operacion"></BotonOperacion>
     </View>
-    <View style={styles.fila}>
-      <BotonOperacion label='1' width={80} onPress={() =>construirNumero('1')}></BotonOperacion>
-      <BotonOperacion label='2' width={80} onPress={() =>construirNumero('2')}></BotonOperacion>
-      <BotonOperacion label='3' width={80} onPress={() =>construirNumero('3')}></BotonOperacion>
-      <BotonOperacion label='+' width={80} onPress={operacionSumar}></BotonOperacion>
+    <View style={GlobalStyles.fila}>
+      <BotonOperacion label='1' width={BOTON_NORMAL} onPress={() =>construirNumero('1')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='2' width={BOTON_NORMAL} onPress={() =>construirNumero('2')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='3' width={BOTON_NORMAL} onPress={() =>construirNumero('3')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='+' width={BOTON_NORMAL} onPress={()=>operacion(Operadores.sumar)} tipo="operacion"></BotonOperacion>
     </View>
-    <View style={styles.fila}>
-      <BotonOperacion label='0' width={180} onPress={() =>construirNumero('0')}></BotonOperacion>
-      <BotonOperacion label='.' width={80} onPress={() =>construirNumero('.')}></BotonOperacion>
-      <BotonOperacion label='=' width={80} onPress={resultado}></BotonOperacion>
+    <View style={GlobalStyles.fila}>
+      <BotonOperacion label='0' width={BOTON_ANCHO} onPress={() =>construirNumero('0')} tipo="numero"></BotonOperacion>
+      <BotonOperacion label='.' width={BOTON_NORMAL} onPress={() =>construirNumero('.')} tipo="otro"></BotonOperacion>
+      <BotonOperacion label='=' width={BOTON_NORMAL} onPress={resultado} tipo="operacion"></BotonOperacion>
     </View>
     </View>
-
 
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems:  'center',
-    justifyContent: 'flex-end',
-    paddingBottom:20,
-  },
-  fila: {
-    flexDirection: 'row',
-    justifyContent: "space-around",
-    marginBottom:16,
-    paddingHorizontal:10,
-    width: '100%',
-  }
-});

@@ -1,4 +1,5 @@
 import {useRef, useState, useEffect} from 'react';
+import * as Haptics from 'expo-haptics';
 
 enum Operadores {
     sumar = '+',
@@ -32,6 +33,7 @@ export const useCalculadora = () =>{
     },[formula]);
 
     const clean = () => {
+        Haptics.selectionAsync()
         setFormula('0');
         setNumero('0');
         setNumeroAnterior('0');
@@ -39,6 +41,9 @@ export const useCalculadora = () =>{
     }
 
     const cambiarSigno = () => {
+
+        Haptics.selectionAsync()
+
         if (numero.includes('-')) {
             return setNumero(numero.replace('-',''));
         } else {
@@ -48,8 +53,12 @@ export const useCalculadora = () =>{
     }
 
     const borrarDigito = () => {
+
+        
         let signo = '';
         let numeroTemporal = numero;
+
+        Haptics.selectionAsync()
 
         if (numero.includes('-')) {
             signo = '-';
@@ -63,6 +72,7 @@ export const useCalculadora = () =>{
     }
 
     const establecerUltimoNumero = () => {
+        
         resultado();
         if (numero.endsWith('.')) {
             setNumeroAnterior(numero.slice(0,-1));
@@ -71,27 +81,14 @@ export const useCalculadora = () =>{
         setNumero('0');
     }
 
-    const operacionDividir = () => {
+    const operacion = (operador : Operadores) => {
+        Haptics.selectionAsync()
         establecerUltimoNumero();
-        UltimaOperacion.current = Operadores.dividir;
-    }
-
-    const operacionMultiplicar = () => {
-        establecerUltimoNumero();
-        UltimaOperacion.current = Operadores.multiplicar;
-    }
-
-    const operacionRestar = () => {
-        establecerUltimoNumero();
-        UltimaOperacion.current = Operadores.restar;
-    }
-
-    const operacionSumar = () => {
-        establecerUltimoNumero();
-        UltimaOperacion.current = Operadores.sumar;
+        UltimaOperacion.current = operador;
     }
 
     const calcularResultado = () => {
+        Haptics.selectionAsync()
         const [primerValor, operacion, segundoValor] = formula.split(' ');
 
         const num1 = Number(primerValor);
@@ -125,6 +122,7 @@ export const useCalculadora = () =>{
     }
 
     const construirNumero = (teclaNumero: string) => {
+        Haptics.selectionAsync()
 
         //Verificar si se escribe el punto decimal
         if (numero.includes('.') && teclaNumero === '.') return;
@@ -158,11 +156,8 @@ export const useCalculadora = () =>{
         clean,
         cambiarSigno,
         borrarDigito,
-        operacionDividir,
-        operacionMultiplicar,
-        operacionRestar,
-        operacionSumar,
         calcularResultado,
-        resultado
+        resultado,
+        operacion
     }
 };

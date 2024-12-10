@@ -1,41 +1,28 @@
 import { Pressable, Text, StyleSheet } from "react-native";
+import {Colores} from '../theme/Colores';
+import { GlobalStyles } from "../theme/Estilos";
 
 interface Props {
     label: string,
     width: number,
     onPress?: () => void;
+    tipo: 'numero' | 'operacion' | 'otro'
 }
 
-export const BotonOperacion = ({label, width, onPress}:Props) => {
+export const BotonOperacion = ({label, width, onPress,tipo}:Props) => {
+    const estiloTipo = 
+    tipo === 'numero' ? GlobalStyles.botonNumero: 
+    tipo === 'operacion' ? GlobalStyles.botonOperacion : 
+    GlobalStyles.botonEspecial;
+
     return (
-        <Pressable>
+        <Pressable onPress={onPress} style={[estiloTipo]}>
             <Text 
-                style={[styles.boton, {width}]}
+                style={[GlobalStyles.boton, {width}]}
                 onPress={onPress}>{label}</Text>
         </Pressable>
     )
 };
-
-const styles = StyleSheet.create({
-    boton: {
-        width: 80,
-        textAlign: 'center',
-        padding: 10,
-        fontSize: 30,
-        fontWeight: 300,
-        borderColor: 'black',
-        borderWidth: 2,
-    },
-
-    botonNumero:{
-        backgroundColor: 'yellow'
-    },
-
-    botonOperacion:{
-        backgroundColor:'green'
-    }
-
-  });
 
   /*
   Colores dependiendo de la utilidad del boton
